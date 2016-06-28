@@ -28,11 +28,9 @@ public class Game implements Serializable {
 	public Game(){
 		
 	};
-	public Game(int gId, String status, Set<Player> p, Set<GameAsset> a) {
+	public Game(int gId, String statusa) {
 		this.merkeraGameId = gId;
-		this.status = status;
-		this.players = p;
-		this.assets = a;				
+		this.status = status;				
 	}
 	
 	@Id
