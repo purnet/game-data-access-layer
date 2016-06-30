@@ -3,8 +3,8 @@ package com.github.purnet.gamedataaccesslayer.entity;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,17 +19,17 @@ import javax.persistence.Table;
 public class Game implements Serializable {
 	
 	private int gameId;
-	private int merkeraGameId;
+	private int merkneraGameId;
 	private String status;
-	private Set<GameAsset> assets = new HashSet<GameAsset>(0);
-	private Set<Player> players = new HashSet<Player>(0);
-	private Set<Move> moves = new HashSet<Move>(0);
+	private List<GameAsset> assets = new ArrayList<GameAsset>(0);
+	private List<Player> players = new ArrayList<Player>(0);
+	private List<Move> moves = new ArrayList<Move>(0);
 	
 	public Game(){
 		
 	};
-	public Game(int gId, String statusa) {
-		this.merkeraGameId = gId;
+	public Game(int gId, String status) {
+		this.merkneraGameId = gId;
 		this.status = status;				
 	}
 	
@@ -44,11 +44,11 @@ public class Game implements Serializable {
 	}
 	
 	@Column(name = "MERKNERA_G_ID", nullable = false)
-	public int getmerkeraGameId() {
-		return merkeraGameId;
+	public int getmerkneraGameId() {
+		return merkneraGameId;
 	}
-	public void setmerkeraGameId(int merkeraGameId) {
-		this.merkeraGameId = merkeraGameId;
+	public void setmerkneraGameId(int merkneraGameId) {
+		this.merkneraGameId = merkneraGameId;
 	}
 	
 	@Column(name = "STATUS")
@@ -60,26 +60,26 @@ public class Game implements Serializable {
 	}
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "game")
-	public Set<GameAsset> getAssets() {
+	public List<GameAsset> getAssets() {
 		return assets;
 	}
-	public void setAssets(Set<GameAsset> assets) {
+	public void setAssets(List<GameAsset> assets) {
 		this.assets = assets;
 	}
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "game")
-	public Set<Player> getPlayers() {
+	public List<Player> getPlayers() {
 		return players;
 	}
-	public void setPlayers(Set<Player> players) {
+	public void setPlayers(List<Player> players) {
 		this.players = players;
 	}
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "game")
-	public Set<Move> getMoves() {
+	public List<Move> getMoves() {
 		return moves;
 	}
-	public void setMoves(Set<Move> moves) {
+	public void setMoves(List<Move> moves) {
 		this.moves = moves;
 	};
 	

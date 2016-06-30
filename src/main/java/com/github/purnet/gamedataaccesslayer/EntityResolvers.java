@@ -1,10 +1,10 @@
 package com.github.purnet.gamedataaccesslayer;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Session;
-import org.hibernate.cfg.Configuration;
 
 import com.github.purnet.gamedataaccesslayer.entity.Game;
 import com.github.purnet.gamedataaccesslayer.entity.GameAsset;
@@ -13,7 +13,7 @@ import com.github.purnet.gamedataaccesslayer.entity.Player;
 public class EntityResolvers {
 		
 	public Game createGame(int gameId, String status, 
-			Set<GameAsset> assets, Set<Player> players){
+			List<GameAsset> assets, List<Player> players){
 		
         SessionManager sm = SessionManager.getInstance();
         Session session = sm.getSession(ThreadId.get());
@@ -21,14 +21,14 @@ public class EntityResolvers {
 		Game game = new Game(gameId, status);
 	    session.save(game);
 
-		Set<GameAsset> gameAssets = game.getAssets();
+		List<GameAsset> gameAssets = game.getAssets();
 		for (GameAsset asset : assets) {
 			asset.setGame(game);
 			gameAssets.add(asset);
 		    session.save(asset);
 		}
 		
-		Set<Player> gamePlayers = game.getPlayers();
+		List<Player> gamePlayers = game.getPlayers();
 		for (Player player : players) {
 			player.setGame(game);
 			gamePlayers.add(player);

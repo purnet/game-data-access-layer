@@ -13,10 +13,7 @@ import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.criteria.Root;
+import java.util.List;
 
 import com.github.purnet.gamedataaccesslayer.entity.Game;
 import com.github.purnet.gamedataaccesslayer.entity.GameAsset;
@@ -93,7 +90,7 @@ public class AppSchemaSingleton {
 			.name("Game")
 			.description("A Game of Scrabble") 
 			.field(newFieldDefinition() 
-                .name("gameId") 
+                .name("merkneraGameId") 
                 .description("The Merknera provided game id") 
                 .type(GraphQLString) 
                 .build()) 
@@ -147,15 +144,6 @@ public class AppSchemaSingleton {
 						} 
                     }) 
                     .build())
-                .field(newFieldDefinition() 
-                    .name("hello") 
-                    .type(GraphQLString) 
-                    .dataFetcher(new DataFetcher() { 
-						public Object get(DataFetchingEnvironment environment) {
-							return "World";
-						} 
-                    }) 
-                    .build())
                 .build();
 		
 		GraphQLObjectType mutationType = newObject() 
@@ -178,7 +166,7 @@ public class AppSchemaSingleton {
 	                    .name("createGame") 
 	                    .type(gameType) 
 	                    .argument(newArgument() 
-	                            .name("gameId") 
+	                            .name("merkneraGameId") 
 	                            .type(GraphQLInt) 
 	                            .build()) 
 	                    .argument(newArgument() 
@@ -187,14 +175,11 @@ public class AppSchemaSingleton {
 	                            .build()) 
 	                    .dataFetcher(new DataFetcher() { 
 	                        public Object get(DataFetchingEnvironment environment) { 
-	                            int gameId = environment.getArgument("gameId"); 
+	                            int gameId = environment.getArgument("merkneraGameId"); 
 	                            String status = environment.getArgument("status");
-	                            //Root root = (Root) environment.getSource(); 
-	                            //return root.changeNumber(newNumber); 
-	                            System.out.println("got to data resolver");
-	                            // above is the example
+
 	                            EntityResolvers resolver = new EntityResolvers();
-	                            Set<GameAsset> assets = new HashSet<GameAsset>(0);
+	                            List<GameAsset> assets = new ArrayList<GameAsset>(0);
 	                    		GameAsset asset = new GameAsset("d34898ec4cadc2b7b85da262e9320a9646655931","gameboard","https://assets.merknera.com/scrabble/board_standard.json");
 	                    	    assets.add(asset);
 
@@ -204,14 +189,14 @@ public class AppSchemaSingleton {
 	                    	    asset = new GameAsset("76d20712668ae0eb85d825b93acb71875a059a00","letters","https://assets.merknera.com/scrabble/letters_standard.json");
 	                    	    assets.add(asset);
 	                    	    
-	                    	    Set<Player> players = new HashSet<Player>(0);
+	                    	    List<Player> players = new ArrayList<Player>(0);
 	                    	    Player player = new Player(1, "Fred");
 	                    	    players.add(player);
 	                    	    
 	                    	    player = new Player(2, "Jane");
 	                    	    players.add(player);
 
-	                    	    return resolver.createGame(gameId, "status", assets, players);
+	                    	    return resolver.createGame(gameId, status, assets, players);
 	                        } 
 	                    }) 
 	                    .build()) 

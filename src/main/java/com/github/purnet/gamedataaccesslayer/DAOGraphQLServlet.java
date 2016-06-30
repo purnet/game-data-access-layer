@@ -83,11 +83,9 @@ public class DAOGraphQLServlet extends HttpServlet {
         sessionManager.getSession(ThreadId.get()).beginTransaction();  
         if (q.getVariables() == null || q.getVariables().equals("")) { 
         	result = new GraphQL(appSchema.getSchema()).execute(query).getData();
-        	System.out.println("query plain no args");
         } else {
         	Map<String, Object> variables = mapper.readValue(q.getVariables(), typeRef);
         	result = new GraphQL(appSchema.getSchema()).execute(query, new Object(), variables).getData();
-        	System.out.println("query args");
         }
 
         sessionManager.getSession(ThreadId.get()).getTransaction().commit();   

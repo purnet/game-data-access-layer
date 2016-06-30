@@ -30,7 +30,7 @@ public class Player implements Serializable {
 		this.playerName = name;
 	}
 	
-	@Column(name = "PLAYER_NUMBER", unique = true, nullable = false)
+	@Column(name = "PLAYER_NUMBER", nullable = false)
 	public int getPlayerNumber() {
 		return playerNumber;
 	}
@@ -48,7 +48,7 @@ public class Player implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "ASSET_ID", unique = true, nullable = false)
+	@Column(name = "PLAYER_ID", unique = true, nullable = false)
 	public int getId() {
 		return id;
 	}
