@@ -170,52 +170,51 @@ public class AppSchemaSingleton {
 	                    .dataFetcher(new DataFetcher() { 
 	                        public Object get(DataFetchingEnvironment environment) { 
 	                            int id = environment.getArgument("id"); 
-	                            System.out.println("mike mike");
 	                            return id; 
 	                        } 
 	                    }) 
 	                    .build())
-//	            .field(newFieldDefinition() 
-//	                    .name("createGame") 
-//	                    .type(gameType) 
-//	                    .argument(newArgument() 
-//	                            .name("gameId") 
-//	                            .type(GraphQLInt) 
-//	                            .build()) 
-//	                    .argument(newArgument() 
-//	                            .name("status") 
-//	                            .type(GraphQLString) 
-//	                            .build()) 
-//	                    .dataFetcher(new DataFetcher() { 
-//	                        public Object get(DataFetchingEnvironment environment) { 
-//	                            int gameId = environment.getArgument("gameId"); 
-//	                            String status = environment.getArgument("status");
-//	                            //Root root = (Root) environment.getSource(); 
-//	                            //return root.changeNumber(newNumber); 
-//	                            System.out.println("got to data resolver");
-//	                            // above is the example
-//	                            EntityResolvers resolver = new EntityResolvers();
-//	                            Set<GameAsset> assets = new HashSet<GameAsset>(0);
-//	                    		GameAsset asset = new GameAsset("d34898ec4cadc2b7b85da262e9320a9646655931","gameboard","https://assets.merknera.com/scrabble/board_standard.json");
-//	                    	    assets.add(asset);
-//
-//	                    	    asset = new GameAsset("caf2417c1d9fc2f2512922ae0514ebbc151fe789","dictionary","https://assets.merknera.com/scrabble/dictionary_sowpods.txt");
-//	                    	    assets.add(asset);
-//	                    	    
-//	                    	    asset = new GameAsset("76d20712668ae0eb85d825b93acb71875a059a00","letters","https://assets.merknera.com/scrabble/letters_standard.json");
-//	                    	    assets.add(asset);
-//	                    	    
-//	                    	    Set<Player> players = new HashSet<Player>(0);
-//	                    	    Player player = new Player(1, "Fred");
-//	                    	    players.add(player);
-//	                    	    
-//	                    	    player = new Player(2, "Jane");
-//	                    	    players.add(player);
-//
-//	                    	    return resolver.createGame(gameId, "status", assets, players);
-//	                        } 
-//	                    }) 
-//	                    .build()) 
+	            .field(newFieldDefinition() 
+	                    .name("createGame") 
+	                    .type(gameType) 
+	                    .argument(newArgument() 
+	                            .name("gameId") 
+	                            .type(GraphQLInt) 
+	                            .build()) 
+	                    .argument(newArgument() 
+	                            .name("status") 
+	                            .type(GraphQLString) 
+	                            .build()) 
+	                    .dataFetcher(new DataFetcher() { 
+	                        public Object get(DataFetchingEnvironment environment) { 
+	                            int gameId = environment.getArgument("gameId"); 
+	                            String status = environment.getArgument("status");
+	                            //Root root = (Root) environment.getSource(); 
+	                            //return root.changeNumber(newNumber); 
+	                            System.out.println("got to data resolver");
+	                            // above is the example
+	                            EntityResolvers resolver = new EntityResolvers();
+	                            Set<GameAsset> assets = new HashSet<GameAsset>(0);
+	                    		GameAsset asset = new GameAsset("d34898ec4cadc2b7b85da262e9320a9646655931","gameboard","https://assets.merknera.com/scrabble/board_standard.json");
+	                    	    assets.add(asset);
+
+	                    	    asset = new GameAsset("caf2417c1d9fc2f2512922ae0514ebbc151fe789","dictionary","https://assets.merknera.com/scrabble/dictionary_sowpods.txt");
+	                    	    assets.add(asset);
+	                    	    
+	                    	    asset = new GameAsset("76d20712668ae0eb85d825b93acb71875a059a00","letters","https://assets.merknera.com/scrabble/letters_standard.json");
+	                    	    assets.add(asset);
+	                    	    
+	                    	    Set<Player> players = new HashSet<Player>(0);
+	                    	    Player player = new Player(1, "Fred");
+	                    	    players.add(player);
+	                    	    
+	                    	    player = new Player(2, "Jane");
+	                    	    players.add(player);
+
+	                    	    return resolver.createGame(gameId, "status", assets, players);
+	                        } 
+	                    }) 
+	                    .build()) 
 	            .build(); 
 		
 		schema = GraphQLSchema.newSchema()

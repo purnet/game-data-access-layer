@@ -87,9 +87,9 @@ public class DAOGraphQLServlet extends HttpServlet {
         } else {
         	Map<String, Object> variables = mapper.readValue(q.getVariables(), typeRef);
         	result = new GraphQL(appSchema.getSchema()).execute(query, new Object(), variables).getData();
-        	System.out.println("query  args");
+        	System.out.println("query args");
         }
-        System.out.println("to this point");
+
         sessionManager.getSession(ThreadId.get()).getTransaction().commit();   
         QueryResult qr = new QueryResult(result);
 
