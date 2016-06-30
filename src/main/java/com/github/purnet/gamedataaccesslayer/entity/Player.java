@@ -30,6 +30,7 @@ public class Player implements Serializable {
 		this.playerName = name;
 	}
 	
+	@Column(name = "PLAYER_NUMBER", unique = true, nullable = false)
 	public int getPlayerNumber() {
 		return playerNumber;
 	}
@@ -37,6 +38,7 @@ public class Player implements Serializable {
 		this.playerNumber = playerNumber;
 	}
 	
+	@Column(name = "PLAYER_NAME")
 	public String getPlayerName() {
 		return playerName;
 	}

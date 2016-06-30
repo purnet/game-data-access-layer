@@ -31,12 +31,15 @@ public class Move implements Serializable {
 		this.gameState = state;
 	};
 	
+	@Column(name = "TILES")
 	public String getTiles() {
 		return tiles;
 	}
 	public void setTiles(String tiles) {
 		this.tiles = tiles;
 	}
+	
+	@Column(name = "GAME_STATE")
 	public String getGameState() {
 		return gameState;
 	}

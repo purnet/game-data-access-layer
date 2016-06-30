@@ -1,9 +1,9 @@
 package com.github.purnet.gamedataaccesslayer;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import com.github.purnet.gamedataaccesslayer.entity.Game;
@@ -11,31 +11,13 @@ import com.github.purnet.gamedataaccesslayer.entity.GameAsset;
 import com.github.purnet.gamedataaccesslayer.entity.Player;
 
 public class EntityResolvers {
-	private static EntityResolvers instance = null;
-	private SessionFactory sessionFactory;
-	
-	protected EntityResolvers() {
-		sessionFactory = new Configuration().configure()
-				.buildSessionFactory();
-	}
-	
-	public static EntityResolvers getInstance(){
-		if (instance == null) {
-			instance = new EntityResolvers();
-		}
-		return instance;
-	}
-
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-	
-	public void createGame(SessionFactory sf, int gameId, String status, 
+		
+	public Game createGame(int gameId, String status, 
 			Set<GameAsset> assets, Set<Player> players){
 		
-		Session session = sf.openSession();
-		session.beginTransaction();
-		
+        SessionManager sm = SessionManager.getInstance();
+        Session session = sm.getSession(ThreadId.get());
+        
 		Game game = new Game(gameId, status);
 	    session.save(game);
 
@@ -52,10 +34,21 @@ public class EntityResolvers {
 			gamePlayers.add(player);
 		    session.save(player);
 		}
+		
+		return game;
 	    
-		session.getTransaction().commit();
-		session.close();
 	}
 	
 	//public void createGameAsset()
+	
+	public ArrayList<Game> getAllGames() {
+		ArrayList<Game> games = null;
+		return games;
+	}
+	
+	public Game getGame(int id) {
+		Game game = null;
+		return game;
+	}
+	
 }
