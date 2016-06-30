@@ -81,6 +81,26 @@ public class Game implements Serializable {
 	}
 	public void setMoves(List<Move> moves) {
 		this.moves = moves;
+	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + merkneraGameId;
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Game other = (Game) obj;
+		if (merkneraGameId != other.merkneraGameId)
+			return false;
+		return true;
 	};
 	
 	

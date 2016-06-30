@@ -64,5 +64,41 @@ public class Move implements Serializable {
 	public void setGame(Game game) {
 		this.game = game;
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((game == null) ? 0 : game.hashCode());
+		result = prime * result
+				+ ((gameState == null) ? 0 : gameState.hashCode());
+		result = prime * result + ((tiles == null) ? 0 : tiles.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Move other = (Move) obj;
+		if (game == null) {
+			if (other.game != null)
+				return false;
+		} else if (!game.equals(other.game))
+			return false;
+		if (gameState == null) {
+			if (other.gameState != null)
+				return false;
+		} else if (!gameState.equals(other.gameState))
+			return false;
+		if (tiles == null) {
+			if (other.tiles != null)
+				return false;
+		} else if (!tiles.equals(other.tiles))
+			return false;
+		return true;
+	}
 	
 }

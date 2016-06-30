@@ -74,6 +74,43 @@ public class GameAsset implements Serializable {
 	public void setGame(Game game) {
 		this.game = game;
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((assetCode == null) ? 0 : assetCode.hashCode());
+		result = prime * result
+				+ ((assetName == null) ? 0 : assetName.hashCode());
+		result = prime * result + ((game == null) ? 0 : game.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GameAsset other = (GameAsset) obj;
+		if (assetCode == null) {
+			if (other.assetCode != null)
+				return false;
+		} else if (!assetCode.equals(other.assetCode))
+			return false;
+		if (assetName == null) {
+			if (other.assetName != null)
+				return false;
+		} else if (!assetName.equals(other.assetName))
+			return false;
+		if (game == null) {
+			if (other.game != null)
+				return false;
+		} else if (!game.equals(other.game))
+			return false;
+		return true;
+	}
 	
 	
 
