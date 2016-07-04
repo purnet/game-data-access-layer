@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.hibernate.Query;
 
 import com.github.purnet.gamedataaccesslayer.entity.Game;
 import com.github.purnet.gamedataaccesslayer.entity.GameAsset;
@@ -42,9 +43,12 @@ public class EntityResolvers {
 	public Move createMove(int gameId, String gameState, String tiles){
 		SessionManager sm = SessionManager.getInstance();
         Session session = sm.getSession(ThreadId.get());
-        Game game = null; 
-        //TODO Query in game
-		Move move = new Move(gameState, tiles);
+        String hql = "FROM com.github.purnet.gamedataaccesslayer.entity.Game g WHERE g.merkneraGameId = :game_id";
+        Query query = session.createQuery(hql);
+        query.setParameter("game_id", gameId);
+        List result = query.list();
+        Game game = (Game) result.get(0);
+		Move move = new Move(tiles, gameState);
 		move.setGame(game);
 	    session.save(move);
 		return move;

@@ -39,7 +39,7 @@ public class Move implements Serializable {
 		this.tiles = tiles;
 	}
 	
-	@Column(name = "GAME_STATE")
+	@Column(name = "GAME_STATE", length = 4000)
 	public String getGameState() {
 		return gameState;
 	}

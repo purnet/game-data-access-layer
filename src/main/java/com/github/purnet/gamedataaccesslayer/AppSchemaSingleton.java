@@ -192,7 +192,7 @@ public class AppSchemaSingleton {
 	                    .type(gameType) 
 	                    .argument(newArgument() 
 	                            .name("merkneraGameId") 
-	                            .type(GraphQLInt) 
+	                            .type(new GraphQLNonNull(GraphQLInt)) 
 	                            .build()) 
 	                    .argument(newArgument() 
 	                            .name("status") 
@@ -270,20 +270,20 @@ public class AppSchemaSingleton {
 	                    .type(moveType) 
 	                    .argument(newArgument() 
 	                            .name("merkneraGameId") 
-	                            .type(GraphQLInt) 
+	                            .type(new GraphQLNonNull(GraphQLInt)) 
 	                            .build()) 
 	                    .argument(newArgument() 
 	                            .name("gameState") 
-	                            .type(GraphQLString) 
+	                            .type(new GraphQLNonNull(GraphQLString)) 
 	                            .build()) 
 	                    .argument(newArgument() 
 	                            .name("tiles") 
-	                            .type(GraphQLString) 
+	                            .type(new GraphQLNonNull(GraphQLString)) 
 	                            .build()) 
 	                    .dataFetcher(new DataFetcher() { 
 	                        public Object get(DataFetchingEnvironment environment) { 
 	                            int gameId = environment.getArgument("merkneraGameId"); 
-	                            String gameState = environment.getArgument("status");
+	                            String gameState = environment.getArgument("gameState");
 	                            String tiles = environment.getArgument("tiles");
 	                            EntityResolvers resolver = new EntityResolvers();
 

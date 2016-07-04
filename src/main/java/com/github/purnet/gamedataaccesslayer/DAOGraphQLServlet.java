@@ -38,7 +38,7 @@ public class DAOGraphQLServlet extends HttpServlet {
 		
 		String b = ThreadId.get();
 		System.out.println("b" + b);
-		String s = "Hello World. Get is not yet implemented" + b;
+		String s = "Game Data Access Layer. Get is not yet implemented" + b;
 		resp.getOutputStream().write(s.getBytes());
     }
 
@@ -60,8 +60,8 @@ public class DAOGraphQLServlet extends HttpServlet {
 		catch(Exception e){
 	         e.printStackTrace();
 	    }
-//		System.out.println("body is:");
-//		System.out.println(query);
+		System.out.println("body is:");
+		System.out.println(query);
 		ObjectMapper mapper = new ObjectMapper();
 		Query q = new Query();
 		try {
