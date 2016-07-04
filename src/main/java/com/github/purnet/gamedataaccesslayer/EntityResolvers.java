@@ -2,12 +2,12 @@ package com.github.purnet.gamedataaccesslayer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.Session;
 
 import com.github.purnet.gamedataaccesslayer.entity.Game;
 import com.github.purnet.gamedataaccesslayer.entity.GameAsset;
+import com.github.purnet.gamedataaccesslayer.entity.Move;
 import com.github.purnet.gamedataaccesslayer.entity.Player;
 
 public class EntityResolvers {
@@ -37,6 +37,17 @@ public class EntityResolvers {
 		
 		return game;
 	    
+	}
+	
+	public Move createMove(int gameId, String gameState, String tiles){
+		SessionManager sm = SessionManager.getInstance();
+        Session session = sm.getSession(ThreadId.get());
+        Game game = null; 
+        //TODO Query in game
+		Move move = new Move(gameState, tiles);
+		move.setGame(game);
+	    session.save(move);
+		return move;
 	}
 	
 	//public void createGameAsset()

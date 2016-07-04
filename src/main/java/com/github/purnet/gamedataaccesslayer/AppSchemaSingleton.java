@@ -4,15 +4,19 @@ import static graphql.Scalars.GraphQLInt;
 import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
+import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
+import static graphql.schema.GraphQLInputObjectType.newInputObject;
 import static graphql.schema.GraphQLObjectType.newObject;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.github.purnet.gamedataaccesslayer.entity.Game;
@@ -37,16 +41,36 @@ public class AppSchemaSingleton {
                 .type(GraphQLString) 
                 .build()) 
         	.field(newFieldDefinition() 
-                .name("name") 
+                .name("assetName") 
                 .description("short name of the asset ie dictionary, gameboard") 
                 .type(GraphQLString) 
                 .build())
             .field(newFieldDefinition() 
-                .name("url") 
+                .name("assetUrl") 
                 .description("download url location for the asset") 
                 .type(GraphQLString) 
                 .build())
             .build();
+		
+		GraphQLInputObjectType assetInputType = newInputObject()
+				.name("AssetInput")
+				.description("An asset used to play scrabble eg board definition, dictionary etc") 
+				.field(newInputObjectField() 
+	                .name("code") 
+	                .description("The hash code for the asset used") 
+	                .type(GraphQLString) 
+	                .build()) 
+	        	.field(newInputObjectField() 
+	                .name("name") 
+	                .description("short name of the asset ie dictionary, gameboard") 
+	                .type(GraphQLString) 
+	                .build()) 
+	            .field(newInputObjectField() 
+	                .name("url") 
+	                .description("download url location for the asset") 
+	                .type(GraphQLString) 
+	                .build())
+	            .build();
 				
 		// Player Object Type
 		GraphQLObjectType playerType = newObject()
@@ -63,13 +87,28 @@ public class AppSchemaSingleton {
                 .type(GraphQLString) 
                 .build()) 
             .build();
+		
+		GraphQLInputObjectType playerInputType = newInputObject()
+				.name("PlayerInput")
+				.description("a player of a game") 
+				.field(newInputObjectField() 
+	                .name("playerNum") 
+	                .description("The players number") 
+	                .type(GraphQLString) 
+	                .build()) 
+	        	.field(newInputObjectField() 
+	                .name("playerName") 
+	                .description("The players name") 
+	                .type(GraphQLString) 
+	                .build()) 
+	            .build();
 	
 		// Move Object Type
 		GraphQLObjectType moveType = newObject()
 			.name("Move")
 			.description("a captured game state for a move in scrabble") 
 			.field(newFieldDefinition() 
-                .name("moveId") 
+                .name("id") 
                 .description("id of the move made") 
                 .type(GraphQLString) 
                 .build()) 
@@ -149,20 +188,6 @@ public class AppSchemaSingleton {
 		GraphQLObjectType mutationType = newObject() 
 	            .name("mutationType")
 	            .field(newFieldDefinition() 
-	                    .name("createTest") 
-	                    .type(GraphQLInt) 
-	                    .argument(newArgument() 
-	                            .name("id") 
-	                            .type(GraphQLInt) 
-	                            .build()) 
-	                    .dataFetcher(new DataFetcher() { 
-	                        public Object get(DataFetchingEnvironment environment) { 
-	                            int id = environment.getArgument("id"); 
-	                            return id; 
-	                        } 
-	                    }) 
-	                    .build())
-	            .field(newFieldDefinition() 
 	                    .name("createGame") 
 	                    .type(gameType) 
 	                    .argument(newArgument() 
@@ -173,33 +198,99 @@ public class AppSchemaSingleton {
 	                            .name("status") 
 	                            .type(GraphQLString) 
 	                            .build()) 
+	                    .argument(newArgument() 
+	                            .name("playerInput") 
+	                            .type(new GraphQLList(playerInputType)) 
+	                            .build()) 
+	                    .argument(newArgument() 
+	                            .name("assetInput") 
+	                            .type(new GraphQLList(assetInputType)) 
+	                            .build()) 
 	                    .dataFetcher(new DataFetcher() { 
 	                        public Object get(DataFetchingEnvironment environment) { 
 	                            int gameId = environment.getArgument("merkneraGameId"); 
 	                            String status = environment.getArgument("status");
-
-	                            EntityResolvers resolver = new EntityResolvers();
+	                            ArrayList<LinkedHashMap<String, String>> playerListArgs = environment.getArgument("playerInput");
+	                            ArrayList<LinkedHashMap<String, String>> assetListArgs = environment.getArgument("assetInput");
+	                            List<Player> players = new ArrayList<Player>(0);
 	                            List<GameAsset> assets = new ArrayList<GameAsset>(0);
-	                    		GameAsset asset = new GameAsset("d34898ec4cadc2b7b85da262e9320a9646655931","gameboard","https://assets.merknera.com/scrabble/board_standard.json");
-	                    	    assets.add(asset);
-
-	                    	    asset = new GameAsset("caf2417c1d9fc2f2512922ae0514ebbc151fe789","dictionary","https://assets.merknera.com/scrabble/dictionary_sowpods.txt");
-	                    	    assets.add(asset);
-	                    	    
-	                    	    asset = new GameAsset("76d20712668ae0eb85d825b93acb71875a059a00","letters","https://assets.merknera.com/scrabble/letters_standard.json");
-	                    	    assets.add(asset);
-	                    	    
-	                    	    List<Player> players = new ArrayList<Player>(0);
-	                    	    Player player = new Player(1, "Fred");
-	                    	    players.add(player);
-	                    	    
-	                    	    player = new Player(2, "Jane");
-	                    	    players.add(player);
+	   
+	                            for (int i = 0; i < playerListArgs.size(); i++) {
+	                            	LinkedHashMap<String, String> playerArgs = playerListArgs.get(i);
+	                            	String pNum = null;
+	                            	String pName = null;
+	                            	for (String key : playerArgs.keySet()) {
+	                            		switch (key) {
+		                        	        case "playerName":  
+		                        	        	 pName = playerArgs.get(key);
+		                        	             break;
+		                        	        case "playerNum":  
+		                        	        	 pNum = playerArgs.get(key);
+		                        	             break;
+		                        	        default: 
+		                                         break;
+		                        		}
+		                            }
+	                            	Player player = new Player(Integer.parseInt(pNum), pName);
+	                            	players.add(player);
+	                            }
+	                            
+	                            for (int i = 0; i < assetListArgs.size(); i++) {
+	                            	LinkedHashMap<String, String> assetArgs = assetListArgs.get(i);
+	                            	String url = null;
+	                            	String code = null;
+	                            	String name = null;
+	                            	for (String key : assetArgs.keySet()) {
+	                            		switch (key) {
+		                        	        case "code":  
+		                        	        	 code = assetArgs.get(key);
+		                        	             break;
+		                        	        case "name":  
+		                        	        	 name = assetArgs.get(key);
+		                        	             break;
+		                        	        case "url":  
+		                        	        	 url = assetArgs.get(key);
+		                        	             break;
+		                        	        default: 
+		                                         break;
+		                        		}
+		                            }
+	                            	GameAsset asset = new GameAsset(code, name, url);
+	                            	assets.add(asset);
+	                            }
+	                            
+	                            EntityResolvers resolver = new EntityResolvers();
 
 	                    	    return resolver.createGame(gameId, status, assets, players);
 	                        } 
 	                    }) 
 	                    .build()) 
+	            .field(newFieldDefinition() 
+	                    .name("createMove") 
+	                    .type(moveType) 
+	                    .argument(newArgument() 
+	                            .name("merkneraGameId") 
+	                            .type(GraphQLInt) 
+	                            .build()) 
+	                    .argument(newArgument() 
+	                            .name("gameState") 
+	                            .type(GraphQLString) 
+	                            .build()) 
+	                    .argument(newArgument() 
+	                            .name("tiles") 
+	                            .type(GraphQLString) 
+	                            .build()) 
+	                    .dataFetcher(new DataFetcher() { 
+	                        public Object get(DataFetchingEnvironment environment) { 
+	                            int gameId = environment.getArgument("merkneraGameId"); 
+	                            String gameState = environment.getArgument("status");
+	                            String tiles = environment.getArgument("tiles");
+	                            EntityResolvers resolver = new EntityResolvers();
+
+	                    	    return resolver.createMove(gameId, gameState, tiles);
+	                        } 
+	                    }) 
+	                    .build())
 	            .build(); 
 		
 		schema = GraphQLSchema.newSchema()

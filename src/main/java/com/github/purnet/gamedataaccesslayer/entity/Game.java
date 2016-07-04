@@ -44,10 +44,10 @@ public class Game implements Serializable {
 	}
 	
 	@Column(name = "MERKNERA_G_ID", nullable = false)
-	public int getmerkneraGameId() {
+	public int getMerkneraGameId() {
 		return merkneraGameId;
 	}
-	public void setmerkneraGameId(int merkneraGameId) {
+	public void setMerkneraGameId(int merkneraGameId) {
 		this.merkneraGameId = merkneraGameId;
 	}
 	
