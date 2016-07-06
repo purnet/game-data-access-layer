@@ -7,6 +7,7 @@ import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
 import static graphql.schema.GraphQLObjectType.newObject;
+import graphql.GraphQLException;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLInputObjectType;
@@ -163,7 +164,7 @@ public class AppSchemaSingleton {
                     .dataFetcher(new DataFetcher() { 
                         public Object get(DataFetchingEnvironment environment) { 
                         	EntityResolvers resolver = new EntityResolvers();
-                        	ArrayList<Game> games = resolver.getAllGames();
+                        	List<Game> games = resolver.getAllGames();
                             return games; 
                         } 
                     }) 
@@ -179,6 +180,10 @@ public class AppSchemaSingleton {
 						public Object get(DataFetchingEnvironment environment) {
 							int id = environment.getArgument("id");
 							EntityResolvers resolver = new EntityResolvers();
+							Game g = resolver.getGame(id);
+							if (g == null) {
+								throw new GraphQLException("No Game Found");
+							}
 							return resolver.getGame(id);
 						} 
                     }) 

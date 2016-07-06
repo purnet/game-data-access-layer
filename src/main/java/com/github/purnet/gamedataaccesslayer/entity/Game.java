@@ -43,7 +43,7 @@ public class Game implements Serializable {
 		this.gameId = id;
 	}
 	
-	@Column(name = "MERKNERA_G_ID", nullable = false)
+	@Column(name = "MERKNERA_G_ID", unique = true, nullable = false)
 	public int getMerkneraGameId() {
 		return merkneraGameId;
 	}

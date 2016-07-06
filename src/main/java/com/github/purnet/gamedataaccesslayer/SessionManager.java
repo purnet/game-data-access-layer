@@ -31,12 +31,16 @@ public class SessionManager {
 	
 	public Session getSession(String reqUuid){
 		Session session = sessions.get(reqUuid);
+		if (session == null) {
+			session = createSession(reqUuid);
+		}
 		return session;
 	}
 	
 	public void closeSession(String reqUuid) {
-		Session session = sessions.get(reqUuid);
-		sessions.remove(reqUuid);
-		session.close();
+		Session session = sessions.remove(reqUuid);
+		if (session != null){
+			session.close();
+		}	
 	}
 }

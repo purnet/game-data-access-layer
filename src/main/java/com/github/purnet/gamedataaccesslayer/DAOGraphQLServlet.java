@@ -1,6 +1,7 @@
 package com.github.purnet.gamedataaccesslayer;
 
 import graphql.GraphQL;
+import graphql.GraphQLException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +12,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.hibernate.HibernateException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -81,14 +84,19 @@ public class DAOGraphQLServlet extends HttpServlet {
         
         SessionManager sessionManager = SessionManager.getInstance();
         sessionManager.getSession(ThreadId.get()).beginTransaction();  
-        if (q.getVariables() == null || q.getVariables().equals("")) { 
-        	result = new GraphQL(appSchema.getSchema()).execute(query).getData();
-        } else {
-        	Map<String, Object> variables = mapper.readValue(q.getVariables(), typeRef);
-        	result = new GraphQL(appSchema.getSchema()).execute(query, new Object(), variables).getData();
+        try {
+	        if (q.getVariables() == null || q.getVariables().equals("")) { 
+	        	result = new GraphQL(appSchema.getSchema()).execute(query).getData();
+	        } else {
+	        	Map<String, Object> variables = mapper.readValue(q.getVariables(), typeRef);
+	        	result = new GraphQL(appSchema.getSchema()).execute(query, new Object(), variables).getData();
+	        }
+	        sessionManager.getSession(ThreadId.get()).getTransaction().commit();  
+        } 
+        catch (Exception e){
+        	sessionManager.getSession(ThreadId.get()).getTransaction().rollback();        	
+        	throw e;
         }
-
-        sessionManager.getSession(ThreadId.get()).getTransaction().commit();   
         QueryResult qr = new QueryResult(result);
 
         jsonString = mapper.writeValueAsString(qr);
