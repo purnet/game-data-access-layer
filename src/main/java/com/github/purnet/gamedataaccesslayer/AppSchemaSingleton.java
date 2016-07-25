@@ -16,19 +16,30 @@ import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.purnet.gamedataaccesslayer.entity.Asset;
 import com.github.purnet.gamedataaccesslayer.entity.Game;
-import com.github.purnet.gamedataaccesslayer.entity.GameAsset;
 import com.github.purnet.gamedataaccesslayer.entity.Player;
+import com.github.purnet.webhelperlib.HTTPRequestHelper;
+import com.github.purnet.webhelperlib.Response;
 
 
 public class AppSchemaSingleton {
 	
 	private static AppSchemaSingleton instance = null;
 	private GraphQLSchema schema;
+	private static final Logger log = LoggerFactory.getLogger(AppSchemaSingleton.class);
 	
 	protected AppSchemaSingleton() {
     
@@ -49,6 +60,11 @@ public class AppSchemaSingleton {
             .field(newFieldDefinition() 
                 .name("assetUrl") 
                 .description("download url location for the asset") 
+                .type(GraphQLString) 
+                .build())
+            .field(newFieldDefinition() 
+                .name("assetContent") 
+                .description("download asset content") 
                 .type(GraphQLString) 
                 .build())
             .build();
@@ -164,7 +180,7 @@ public class AppSchemaSingleton {
                     .dataFetcher(new DataFetcher() { 
                         public Object get(DataFetchingEnvironment environment) { 
                         	EntityResolvers resolver = new EntityResolvers();
-                        	List<Game> games = resolver.getAllGames();
+                        	List<GameAdapter> games = resolver.getAllGames();
                             return games; 
                         } 
                     }) 
@@ -180,12 +196,28 @@ public class AppSchemaSingleton {
 						public Object get(DataFetchingEnvironment environment) {
 							int id = environment.getArgument("id");
 							EntityResolvers resolver = new EntityResolvers();
-							Game g = resolver.getGame(id);
+							GameAdapter g = resolver.getGame(id);
 							if (g == null) {
 								throw new GraphQLException("No Game Found");
 							}
 							return resolver.getGame(id);
 						} 
+                    }) 
+                    .build())
+                .field(newFieldDefinition() 
+                    .name("asset") 
+                    .type(assetType) 
+                    .argument(newArgument() 
+                            .name("assetCode") 
+                            .type(new GraphQLNonNull(GraphQLString)) 
+                            .build()) 
+                    .dataFetcher(new DataFetcher() { 
+                        public Object get(DataFetchingEnvironment environment) { 
+                        	String assetCode = environment.getArgument("assetCode");
+                        	EntityResolvers resolver = new EntityResolvers();
+                        	Asset asset = resolver.getAsset(assetCode);
+                            return asset; 
+                        } 
                     }) 
                     .build())
                 .build();
@@ -218,7 +250,7 @@ public class AppSchemaSingleton {
 	                            ArrayList<LinkedHashMap<String, String>> playerListArgs = environment.getArgument("playerInput");
 	                            ArrayList<LinkedHashMap<String, String>> assetListArgs = environment.getArgument("assetInput");
 	                            List<Player> players = new ArrayList<Player>(0);
-	                            List<GameAsset> assets = new ArrayList<GameAsset>(0);
+	                            Set<Asset> assets = new HashSet<Asset>();
 	   
 	                            for (int i = 0; i < playerListArgs.size(); i++) {
 	                            	LinkedHashMap<String, String> playerArgs = playerListArgs.get(i);
@@ -260,7 +292,7 @@ public class AppSchemaSingleton {
 		                                         break;
 		                        		}
 		                            }
-	                            	GameAsset asset = new GameAsset(code, name, url);
+	                            	Asset asset = new Asset(code, name, url);
 	                            	assets.add(asset);
 	                            }
 	                            
@@ -291,7 +323,6 @@ public class AppSchemaSingleton {
 	                            String gameState = environment.getArgument("gameState");
 	                            String tiles = environment.getArgument("tiles");
 	                            EntityResolvers resolver = new EntityResolvers();
-
 	                    	    return resolver.createMove(gameId, gameState, tiles);
 	                        } 
 	                    }) 

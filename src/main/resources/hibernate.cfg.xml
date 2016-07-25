@@ -22,9 +22,9 @@
 		<property name="hibernate.hbm2ddl.auto">create-drop</property>
 
 		<!-- Annotated entity classes -->
-		<mapping class="com.github.purnet.gamedataaccesslayer.AppUser" />
+
 		<mapping class="com.github.purnet.gamedataaccesslayer.entity.Game" />
-		<mapping class="com.github.purnet.gamedataaccesslayer.entity.GameAsset" />
+		<mapping class="com.github.purnet.gamedataaccesslayer.entity.Asset" />
 		<mapping class="com.github.purnet.gamedataaccesslayer.entity.Move" />
 		<mapping class="com.github.purnet.gamedataaccesslayer.entity.Player" />
 

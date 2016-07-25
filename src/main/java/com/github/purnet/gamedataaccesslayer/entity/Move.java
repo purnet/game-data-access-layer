@@ -21,6 +21,7 @@ public class Move implements Serializable {
 	private int id;
 	private String tiles;
 	private String gameState;
+	
 	private Game game;
 	
 	public Move() {
