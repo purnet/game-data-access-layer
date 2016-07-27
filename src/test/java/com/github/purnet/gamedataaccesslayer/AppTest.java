@@ -44,7 +44,7 @@ public class AppTest extends TestCase {
 	    player = new Player(2, "Jane");
 	    players.add(player);
 
-	    GameAdapter g = resolver.createGame(testGameId, "PENDING", assets, players);
+	    GameAdapter g = resolver.createGame(testGameId, "PENDING","Scrabble", assets, players);
 	    s.getTransaction().commit();
 	    
 	    s.beginTransaction();

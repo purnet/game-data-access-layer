@@ -18,6 +18,7 @@ import com.github.purnet.gamedataaccesslayer.entity.Asset;
 import com.github.purnet.gamedataaccesslayer.entity.Game;
 import com.github.purnet.gamedataaccesslayer.entity.Move;
 import com.github.purnet.gamedataaccesslayer.entity.Player;
+import com.github.purnet.gamedataaccesslayer.entity.ScrabbleMove;
 import com.github.purnet.webhelperlib.HTTPRequestHelper;
 import com.github.purnet.webhelperlib.Response;
 
@@ -26,13 +27,13 @@ public class EntityResolvers {
     private static final String getGameByIdhql = "FROM com.github.purnet.gamedataaccesslayer.entity.Game g WHERE g.merkneraGameId = :game_id";
     private static final String getAssetByIdhql = "FROM com.github.purnet.gamedataaccesslayer.entity.Asset a WHERE a.assetCode = :asset_code";
 	
-    public GameAdapter createGame(int gameId, String status, 
+    public GameAdapter createGame(int gameId, String status, String gameType,
 			Set<Asset> assets, List<Player> players) throws HibernateException {
 		
         SessionManager sm = SessionManager.getInstance();
         Session session = sm.getSession(ThreadId.get());
         
-		Game game = new Game(gameId, status);
+		Game game = new Game(gameId, status, gameType);
 		session.save(game);
 		
 		for (Asset a : assets) {
@@ -83,7 +84,7 @@ public class EntityResolvers {
         query.setParameter("game_id", gameId);
         List<Game> result = (ArrayList<Game>) query.list(); 
         Game game = (Game) result.get(0);
-		Move move = new Move(tiles, gameState);
+		Move move = new ScrabbleMove(tiles, gameState);
 		move.setGame(game);
 	    session.save(move);
 		return move;

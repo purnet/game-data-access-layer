@@ -16,9 +16,6 @@ import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -29,10 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.purnet.gamedataaccesslayer.entity.Asset;
-import com.github.purnet.gamedataaccesslayer.entity.Game;
 import com.github.purnet.gamedataaccesslayer.entity.Player;
-import com.github.purnet.webhelperlib.HTTPRequestHelper;
-import com.github.purnet.webhelperlib.Response;
 
 
 public class AppSchemaSingleton {
@@ -236,6 +230,10 @@ public class AppSchemaSingleton {
 	                            .type(GraphQLString) 
 	                            .build()) 
 	                    .argument(newArgument() 
+	                            .name("gameType") 
+	                            .type(new GraphQLNonNull(GraphQLString)) 
+	                            .build()) 
+	                    .argument(newArgument() 
 	                            .name("playerInput") 
 	                            .type(new GraphQLList(playerInputType)) 
 	                            .build()) 
@@ -247,6 +245,7 @@ public class AppSchemaSingleton {
 	                        public Object get(DataFetchingEnvironment environment) { 
 	                            int gameId = environment.getArgument("merkneraGameId"); 
 	                            String status = environment.getArgument("status");
+	                            String gameType = environment.getArgument("gameType");
 	                            ArrayList<LinkedHashMap<String, String>> playerListArgs = environment.getArgument("playerInput");
 	                            ArrayList<LinkedHashMap<String, String>> assetListArgs = environment.getArgument("assetInput");
 	                            List<Player> players = new ArrayList<Player>(0);
@@ -298,7 +297,7 @@ public class AppSchemaSingleton {
 	                            
 	                            EntityResolvers resolver = new EntityResolvers();
 
-	                    	    return resolver.createGame(gameId, status, assets, players);
+	                    	    return resolver.createGame(gameId, status, gameType, assets, players);
 	                        } 
 	                    }) 
 	                    .build()) 

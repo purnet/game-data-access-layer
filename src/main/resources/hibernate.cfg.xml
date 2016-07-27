@@ -26,6 +26,7 @@
 		<mapping class="com.github.purnet.gamedataaccesslayer.entity.Game" />
 		<mapping class="com.github.purnet.gamedataaccesslayer.entity.Asset" />
 		<mapping class="com.github.purnet.gamedataaccesslayer.entity.Move" />
+		<mapping class="com.github.purnet.gamedataaccesslayer.entity.ScrabbleMove" />
 		<mapping class="com.github.purnet.gamedataaccesslayer.entity.Player" />
 
 	</session-factory>

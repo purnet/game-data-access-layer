@@ -10,10 +10,13 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -34,13 +37,14 @@ public class Game implements Serializable {
 	
 	@Column(name = "STATUS")
 	private String status;
-	//private List<Asset> assets = new ArrayList<Asset>(0);
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "game")
-	private List<Player> players = new ArrayList<Player>(0);
+	@Column(name = "GAME_TYPE")
+	private String gameType;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "game")
 	private List<Move> moves = new ArrayList<Move>(0);
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "game")
+	private List<Player> players = new ArrayList<Player>(0);
 	
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name="GAME_ASSET", 
@@ -48,14 +52,14 @@ public class Game implements Serializable {
 				inverseJoinColumns={@JoinColumn(name="ASSET_CODE")})
 	private Set<Asset> assets = new HashSet<Asset>();
 	
-	public Game(){
+    public Game(){
 		
 	};
-	public Game(int gId, String status) {
-		this.merkneraGameId = gId;
-		this.status = status;				
+	public Game(int gId, String status, String gameType) {
+		this.setMerkneraGameId(gId);
+		this.setStatus(status);	
+		this.setGameType(gameType);
 	}
-	
 	public int getGameId() {
 		return gameId;
 	}
@@ -77,30 +81,31 @@ public class Game implements Serializable {
 		this.status = status;
 	}
 	
-	
 
-	//@OneToMany(fetch = FetchType.LAZY, mappedBy = "game")
-	public Set<Asset> getAssets() {
-		return assets;
+	public String getGameType() {
+		return gameType;
 	}
-	public void setAssets(Set<Asset> assets) {
-		this.assets = assets;
+	public void setGameType(String gameType) {
+		this.gameType = gameType;
 	}
-	
-	
-	public List<Player> getPlayers() {
-		return players;
-	}
-	public void setPlayers(List<Player> players) {
-		this.players = players;
-	}
-	
 	
 	public List<Move> getMoves() {
 		return moves;
 	}
 	public void setMoves(List<Move> moves) {
 		this.moves = moves;
+	}
+	public Set<Asset> getAssets() {
+		return assets;
+	}
+	public void setAssets(Set<Asset> assets) {
+		this.assets = assets;
+	}
+	public List<Player> getPlayers() {
+		return players;
+	}
+	public void setPlayers(List<Player> players) {
+		this.players = players;
 	}
 	@Override
 	public int hashCode() {

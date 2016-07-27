@@ -5,40 +5,27 @@ import static javax.persistence.GenerationType.IDENTITY;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 
 @Entity
+@Inheritance
+@DiscriminatorColumn(name="GAME_TYPE")
 @Table(name = "move")
-public class Move implements Serializable {
+public abstract class Move implements Serializable {
 
 	private int id;
-	private String tiles;
 	private String gameState;
-	
 	private Game game;
-	
-	public Move() {
-		
-	};
-	public Move (String tile, String state){
-		this.tiles = tile;
-		this.gameState = state;
-	};
-	
-	@Column(name = "TILES")
-	public String getTiles() {
-		return tiles;
-	}
-	public void setTiles(String tiles) {
-		this.tiles = tiles;
-	}
 	
 	@Column(name = "GAME_STATE", length = 4000)
 	public String getGameState() {
@@ -72,7 +59,7 @@ public class Move implements Serializable {
 		result = prime * result + ((game == null) ? 0 : game.hashCode());
 		result = prime * result
 				+ ((gameState == null) ? 0 : gameState.hashCode());
-		result = prime * result + ((tiles == null) ? 0 : tiles.hashCode());
+		result = prime * result + id;
 		return result;
 	}
 	@Override
@@ -94,12 +81,10 @@ public class Move implements Serializable {
 				return false;
 		} else if (!gameState.equals(other.gameState))
 			return false;
-		if (tiles == null) {
-			if (other.tiles != null)
-				return false;
-		} else if (!tiles.equals(other.tiles))
+		if (id != other.id)
 			return false;
 		return true;
 	}
+	
 	
 }
